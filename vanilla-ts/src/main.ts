@@ -11,8 +11,7 @@ app.innerHTML = `
 function generate() {
   // notes
   var notes = new NotesGenerator();  
-  console.log(notes.intervals.map(interval => `${interval.notes[0].getName()} ${interval.gap.name} ${interval.notes[1]?.getName()} `))
-  console.log(notes.chords.map(c => c.toString()))
+ console.log(notes)
   // intervalles
   // accords
   // gammes
