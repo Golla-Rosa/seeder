@@ -2,24 +2,26 @@ import { Note } from "./obj/note";
 import { NOTATION_LIST } from "./constants/notations.list"
 import { ALTERATION_LIST } from "./constants/alterations.list";
 import { Intervalle } from "./obj/intervalle";
-import { Gap } from "./obj/interval.gap";
+import { IntervalleMolde } from "./obj/interval.mold";
 import { INTERVAL_TYPES } from "./constants/intervalle.types";
 import { INTERVAL_NATURES } from "./constants/intervalle.natures";
-import { ChordGap } from "./obj/chord.gap";
+import { ChordMold } from "./obj/chord.mold";
 import { Chord } from "./obj/chord";
-import { ScaleGap } from "./obj/scale.gap";
+import { ScaleMold } from "./obj/scale.mold";
 import { SCALE_SHAPES } from "./constants/basic.scales";
 import { Scale } from "./obj/scale";
 export class NotesGenerator {
     notes: Note[];
     
-    gaps: Gap[];
+    intervalMolds: IntervalleMolde[];
     intervals: Intervalle[];
 
-    chordShapes: ChordGap[];
+    chordMolds: ChordMold[];
     chords: Chord[];
-    scalesMold: Scale[];
+    scalesMold: ScaleMold[];
     scales: Scale[];
+
+
     constructor() {
         this.notes = this.generateNotes();
         console.log(this.notes)
@@ -55,19 +57,19 @@ export class NotesGenerator {
         return
     }
 
-    generateGaps(): Gap[] {
-        var gaps: Gap[] = []
+    generateGaps(): IntervalleMolde[] {
+        var gaps: IntervalleMolde[] = []
         for (let i = 0; i < INTERVAL_TYPES.length; i++) {
             const intervalType = INTERVAL_TYPES[i];
             for (let x = 0; x < INTERVAL_NATURES.length; x++) {
                 const intervalNature = INTERVAL_NATURES[x];
-                const gap: Gap = new Gap();
+                const gap: IntervalleMolde = new IntervalleMolde();
                 gap.code = `IG${i}${x}`
                 gap.nature = intervalNature;
                 gap.type = intervalType;
-                gap.ton = intervalType.tone+ intervalNature.tone;
+                gap.tone = intervalType.tone+ intervalNature.tone;
 
-                console.log(intervalNature, gap.ton, intervalType.tone, intervalNature.tone);
+                console.log(intervalNature, gap.tone, intervalType.tone, intervalNature.tone);
                 gap.name = `${intervalType.english} ${intervalNature.english}`
                 gaps.push(gap);
             }
@@ -79,22 +81,18 @@ export class NotesGenerator {
         var intervals: Intervalle[] = [];
         for (let i = 0; i < this.notes.length; i++) {
             const note = this.notes[i];
+
             for (let x = 0; x < this.gaps.length; x++) {
                 const interval: Intervalle = new Intervalle();
                 const gap = this.gaps[x];
 
-                
-                
                 interval.code = `IT${i}${x}`
-                interval.notes.push(note);
-                interval.notes.push(this.notes.find(n => n.tone === gap.ton + note.tone));
                 interval.gap = gap;
-                interval.tons = [note.tone, gap.ton + note.tone]
-                interval.libelleProvisoire = `${interval.getName()}`
+                interval.notes = [note.tone, gap.tone + note.tone];
+
                 intervals.push(interval)
             }
         }
-        console.log(intervals, "Interval")
         return intervals;
     }
 
@@ -119,7 +117,7 @@ export class NotesGenerator {
                 // trouver dans la liste des intervalles une intervalle qui a le meme ton que le deuxieme ton du premier interval de l'accord
                 this.intervals.find(i => i.tons[0] == chord.intervals[0].tons[1] && i.gap.code === chordShape.gaps[1].code),
                 
- )
+                )
                 chord.name = note.getName() + " " + chord.gap.getName();
                 chords.push(chord);
             }
@@ -127,12 +125,12 @@ export class NotesGenerator {
         return chords;
     }
 
-    generateChordShapes(): ChordGap[] {
-        var chordGaps: ChordGap[] = [];
+    generateChordShapes(): ChordMold[] {
+        var chordGaps: ChordMold[] = [];
         for (let i = 0; i < INTERVAL_NATURES.length; i++) {
             const nature = INTERVAL_NATURES[i];
 
-            var accord: ChordGap = new ChordGap();
+            var accord: ChordMold = new ChordMold();
             accord.nature = nature;
             accord.code = `AC${i}`;
             accord.libelleProvisoire = accord.getName();

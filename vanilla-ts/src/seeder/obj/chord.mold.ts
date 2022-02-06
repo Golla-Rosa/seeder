@@ -2,12 +2,13 @@ import { IntervalleMolde } from "./interval.mold";
 import { Notations } from "./notations";
 import { Note } from "./note";
 
-export class Intervalle {
-    code: string;
-    names: Notations;
-    gap: IntervalleMolde;
-    notes: number[];
+export class ChordMold extends Notations {
+    
+    type: Notations;
+    nature: Notations;
+    tones: number[] = [];
+
     getName(): string {
-        return this.names.english; 
+        return this.nature.english
     }
 }

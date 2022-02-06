@@ -1,4 +1,4 @@
-import { ChordGap } from "./chord.gap";
+import { ChordMold } from "./chord.mold";
 import { Intervalle } from "./intervalle";
 import { Note } from "./note";
 
@@ -7,6 +7,6 @@ export class Scale {
     name: string;
     notes: Note[] = [];
     intervals: Intervalle[] = [];
-    gap: ChordGap;
+    gap: ChordMold;
     tons: number [] = []
 }

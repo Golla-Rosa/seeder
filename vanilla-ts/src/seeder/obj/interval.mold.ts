@@ -1,10 +1,9 @@
 import { Notations } from "./notations";
 
-export class Gap {
-    code: string;
+export class IntervalleMolde extends Notations {
+    
     type: Notations;
     nature: Notations;
-    ton: number;
     name: string;
     
 }

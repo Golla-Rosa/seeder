@@ -1,17 +1,9 @@
-import { ChordGap } from "./chord.gap";
+import { ChordMold } from "./chord.mold";
 import { Intervalle } from "./intervalle";
+import { Notations } from "./notations";
 import { Note } from "./note";
 
-export class Chord {
-    code: string;
-    name: string;
-    notes: Note[] = [];
-    intervals: Intervalle[] = [];
-    gap: ChordGap;
-
-    toString() {
-        var x = this.intervals.map(i => i?.notes);
-        var notes = x?.map(notes => notes?.map(n => n?.getName()))
-        console.log(this.name , notes )
-    }
+export class Chord extends Notations {
+    tones: number[];
+    mold: ChordMold;
 }
