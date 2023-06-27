@@ -10,23 +10,20 @@ import { Chord } from "./obj/chord";
 import { ScaleGap } from "./obj/scale.gap";
 import { SCALE_SHAPES } from "./constants/basic.scales";
 import { Scale } from "./obj/scale";
+
 export class NotesGenerator {
     notes: Note[];
-    
     gaps: Gap[];
     intervals: Intervalle[];
-
     chordShapes: ChordGap[];
     chords: Chord[];
     scalesMold: Scale[];
     scales: Scale[];
+
     constructor() {
         this.notes = this.generateNotes();
-        console.log(this.notes)
-        // this.notes.push(...this.generateNotes())
         this.manageIntervals();
         this.manageChords();
-
         this.manageScales();
     }
     
@@ -83,8 +80,6 @@ export class NotesGenerator {
                 const interval: Intervalle = new Intervalle();
                 const gap = this.gaps[x];
 
-                
-                
                 interval.code = `IT${i}${x}`
                 interval.notes.push(note);
                 interval.notes.push(this.notes.find(n => n.tone === gap.ton + note.tone));
@@ -112,14 +107,11 @@ export class NotesGenerator {
                 var chord = new Chord();
                 chord.code = `CH${i}${x}`
                 chord.gap = chordShape;
+                chord.intervals.push(this.intervals.find(i => i.tons[0] == note.tone && i.gap.code === chordShape.gaps[0].code))
                 chord.intervals.push(
-                    this.intervals.find(i => i.tons[0] == note.tone && i.gap.code === chordShape.gaps[0].code),                )
-                    chord.intervals.push(
- 
-                // trouver dans la liste des intervalles une intervalle qui a le meme ton que le deuxieme ton du premier interval de l'accord
-                this.intervals.find(i => i.tons[0] == chord.intervals[0].tons[1] && i.gap.code === chordShape.gaps[1].code),
-                
- )
+                    // trouver dans la liste des intervalles une intervalle qui a le meme ton que le deuxieme ton du premier interval de l'accord
+                    this.intervals.find(i => i.tons[0] == chord.intervals[0].tons[1] && i.gap.code === chordShape.gaps[1].code),
+                )
                 chord.name = note.getName() + " " + chord.gap.getName();
                 chords.push(chord);
             }
@@ -129,10 +121,11 @@ export class NotesGenerator {
 
     generateChordShapes(): ChordGap[] {
         var chordGaps: ChordGap[] = [];
+        
         for (let i = 0; i < INTERVAL_NATURES.length; i++) {
             const nature = INTERVAL_NATURES[i];
-
             var accord: ChordGap = new ChordGap();
+            
             accord.nature = nature;
             accord.code = `AC${i}`;
             accord.libelleProvisoire = accord.getName();
@@ -162,12 +155,9 @@ export class NotesGenerator {
                     ];
                     break;
                 case "NA0": continue;
-                
             }
             chordGaps.push(accord);
-            
         }
-    
         return chordGaps;
     }
 
@@ -192,12 +182,13 @@ export class NotesGenerator {
         }
         return scales;
     }
+    
     ArrayMove(array, from, to): [] {
         return array.splice(to, 0, array.splice(from, 1)[0])
     }
+    
     generateScaleMolds(): Scale[] {
         var scales: Scale[] = [];
-        
         for (let i = 0; i < SCALE_SHAPES.length; i++) {
             const scaleShap = SCALE_SHAPES[i];
             var { tons } = scaleShap;
@@ -208,286 +199,8 @@ export class NotesGenerator {
                 scale.name = scaleShap.libelleProvisoire + x;
                 scales.push(scale);
                 this.ArrayMove(tons, 0, tons.length - 1)
-
             }
- 
         }
         return scales;
-        // List<GammeModel> gammeModels = new List<GammeModel>()
-        //     {
-        //         new GammeModel("Ionien", 0.ToString(), new List<Ecart>() {
-        //         // Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         // Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         // Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         // Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         // Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         // Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         // Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //     }, ModeEnum.Majeur),
-        //     new GammeModel("Dorien", 1.ToString(), new List<Ecart>() {
-        //         // Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         // Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         // Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         // Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         // Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         // Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         // Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-
-        //     }, ModeEnum.Majeur),
-        //      new GammeModel("Phrygien", 2.ToString(), new List<Ecart>() {
-        //         // Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         // Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         // Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         // Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         // Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         // Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         // Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-
-
-        //     }, ModeEnum.Majeur),
-        //      new GammeModel("Lydien", 3.ToString(), new List<Ecart>() {
-        //         // Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         // Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         // Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         // Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         // Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         // Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         // Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //     }, ModeEnum.Majeur),
-        //      new GammeModel("Myxolidien", 4.ToString(), new List<Ecart>() {
-        //         // Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         // Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         // Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         // Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         // Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         // Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         // Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-
-        //     }, ModeEnum.Majeur),
-        //     new GammeModel("Mineur naturel", 5.ToString(), new List<Ecart>() {
-        //         // Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         // Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         // Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         // Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         // Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         // Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         // Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-
-
-        //     }, ModeEnum.Majeur),
-        //      new GammeModel("Locrien", 6.ToString(), new List<Ecart>() {
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //     }, ModeEnum.Majeur),
-
-        //     new GammeModel("Mineur Mélodique", 7.ToString(), new List<Ecart>() {
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //     }, ModeEnum.MineurMelodique),
-        //      new GammeModel("Dorien B2", 8.ToString(), new List<Ecart>() {
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //     }, ModeEnum.MineurMelodique),
-        //     new GammeModel("Lydien aug.", 9.ToString(), new List<Ecart>() {
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-
-        //     }, ModeEnum.MineurMelodique),
-        //     new GammeModel("Lydien dom.", 10.ToString(), new List<Ecart>() {
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-
-        //     }, ModeEnum.MineurMelodique),
-        //     new GammeModel("Aeolien dom.", 11.ToString(), new List<Ecart>() {
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-
-        //     }, ModeEnum.MineurMelodique),
-        //     new GammeModel("Half dim.", 12.ToString(), new List<Ecart>() {
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-
-        //     }, ModeEnum.MineurMelodique),
-        //     new GammeModel("Alteré.", 13.ToString(), new List<Ecart>() {
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //     }, ModeEnum.MineurMelodique),
-
-        //     new GammeModel("Mineur harm.", 14.ToString(), new List<Ecart>() {
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //     }, ModeEnum.MineurHarmonique),
-        //     new GammeModel("Locrian #6.", 15.ToString(), new List<Ecart>() {
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //     }, ModeEnum.MineurHarmonique),
-        //     new GammeModel("Majeur #5.", 16.ToString(), new List<Ecart>() {
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-
-        //     }, ModeEnum.MineurHarmonique),
-        //     new GammeModel("Dorien #4.", 17.ToString(), new List<Ecart>() {
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //     }, ModeEnum.MineurHarmonique),
-        //     new GammeModel("Phrygien Dom.", 18.ToString(), new List<Ecart>() {
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //     }, ModeEnum.MineurHarmonique),
-        //      new GammeModel("Lydien #2.", 19.ToString(), new List<Ecart>() {
-        //         Ecarts.Where(e => e.Ton == 1.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-
-        //     }, ModeEnum.MineurHarmonique),
-        //      new GammeModel("Dom. Alt. bb7", 20.ToString(), new List<Ecart>() {
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1.5).FirstOrDefault(),
-        //     }, ModeEnum.MineurHarmonique),
-
-        //     new GammeModel("Majeur Harmonic", 21.ToString(), new List<Ecart>() {
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //     }, ModeEnum.MajeurHarmonique),
-        //     new GammeModel("Dorien b5", 22.ToString(), new List<Ecart>() {
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-
-        //     }, ModeEnum.MajeurHarmonique),
-        //     new GammeModel("Phrygien b4", 23.ToString(), new List<Ecart>() {
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //     }, ModeEnum.MajeurHarmonique),
-        //     new GammeModel("Lydien b3", 24.ToString(), new List<Ecart>() {
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-
-        //     }, ModeEnum.MajeurHarmonique),
-        //     new GammeModel("Myxolidien b3", 25.ToString(), new List<Ecart>() {
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-
-        //     }, ModeEnum.MajeurHarmonique),
-        //     new GammeModel("Lydien aug. #2", 26.ToString(), new List<Ecart>() {
-        //         Ecarts.Where(e => e.Ton == 1.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-
-
-        //     }, ModeEnum.MajeurHarmonique),
-        //     new GammeModel("Locrian bb7", 27.ToString(), new List<Ecart>() {
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 0.5).FirstOrDefault(),
-        //         Ecarts.Where(e => e.Ton == 1.5).FirstOrDefault(),
-        //     }, ModeEnum.MajeurHarmonique),
-
-        // };
     }
 }
